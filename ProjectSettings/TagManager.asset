@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - TempBlock
+  - GameBlock
+  - GamePiece
+  - ColorBlock
+  - BgBlock
+  - background_block
+  - ScoreText
+  - UICanvas
+  - GameOverCanvas
+  - TextCanvas
+  - RestartButton
+  - DarkenBG
+  - BlurBG
+  - ChangeColor
+  - TextLabel
+  - HighScoreIcon
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
