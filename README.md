@@ -8,4 +8,5 @@ Saves highscore!
 Change to dark mode!
 ![alt text](https://raw.githubusercontent.com/vahnilah/100Puzzle/master/Images/DarkMode.jpg)
 
-Version 1.0 is avalible to download
+Version 1.01 is avalible to download
+- Improves CPU performance

@@ -17,13 +17,31 @@ public class WindowManager : MonoBehaviour
         lastScreenSize = new Vector2(Screen.width, Screen.height);
         instance = this;                                                            // Singleton instance
     }
+
+    bool _canUpdate = false;
+    float _gatherTime = 0f;
+    float _setTime = 1f;
+
     void Update()
     {
-        Vector2 screenSize = new Vector2(Screen.width, Screen.height);
-        if (this.lastScreenSize != screenSize)
+        if (Input.GetMouseButtonUp(0) || Input.GetMouseButton(0))
         {
-            this.lastScreenSize = screenSize;
-            OnScreenSizeChange(Screen.width, Screen.height);                        //  Launch the event when the screen size change
+            _canUpdate = true;
+            _gatherTime = 0f;
+        }
+
+        if (_canUpdate == true)
+        {
+            _gatherTime += Time.deltaTime;
+            if (_gatherTime > _setTime)
+                _canUpdate = false;
+
+         Vector2 screenSize = new Vector2(Screen.width, Screen.height);
+            if (this.lastScreenSize != screenSize)
+            {
+                this.lastScreenSize = screenSize;
+                OnScreenSizeChange(Screen.width, Screen.height);                        //  Launch the event when the screen size change
+            }
         }
     }
 }

@@ -90,7 +90,7 @@ public class GamePieces : MonoBehaviour
                     onBoard++;
                 }
             }
-            catch (MissingReferenceException e)
+            catch (MissingReferenceException)
             {
                 //Debug.Log("Hi");
                 //missingFromBoard++;
@@ -119,7 +119,7 @@ public class GamePieces : MonoBehaviour
                     offBoard++;
                 }
             }
-            catch (MissingReferenceException e)
+            catch (MissingReferenceException)
             {
                 //Debug.Log("Hi");
                 //missingFromBoard++;

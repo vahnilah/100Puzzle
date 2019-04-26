@@ -142,7 +142,7 @@ MonoBehaviour:
   CreateUV: 1
   FlipBackFaceUV: 0
   DoubleSided: 0
-  AutoUpdate: 1
+  AutoUpdate: 0
 --- !u!61 &1676754821556306919
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -189,7 +189,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1676754821556306913}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 5db3b26586c57364b98c10f3d797be19, type: 2}
   m_CullingMode: 0

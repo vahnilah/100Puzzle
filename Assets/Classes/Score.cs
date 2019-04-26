@@ -50,7 +50,7 @@ public class Score : MonoBehaviour
             HighScore = oldScore.highScore;
             data = null;
         }
-        catch (NullReferenceException e)
+        catch (System.NullReferenceException)
         {
             HighScore = 0;
             SaveData.SetHighScore(HighScore, HighScore);
@@ -95,84 +95,107 @@ public class Score : MonoBehaviour
 
     }
 
+    float _gatherScoreTime = 0f;
+    float _waitTime = 1f;
+    bool _runUpdate = false;
+
+
     // Update is called once per frame
     void Update()
     {
-        if (DetectPossibleMoves.IsGameOver == true)
+        if (Input.GetMouseButtonUp(0) || Input.GetMouseButton(0) )
         {
-            // Condenced game update score below for game over text w/o animation
-            totalScoreText.text = PlayedScore.ToString();
-            int diff = TotalScore - PlayedScore;
-            int loops = 10;
-            int valueToIncrement = diff / loops;
-            int temp = PlayedScore + valueToIncrement;
-            totalScoreText.text = temp.ToString();
-            GameOverInfo.totalScore = temp;
+            _runUpdate = true;
+            _gatherScoreTime = 0f;
 
-            TotalScore = temp;
         }
-        else
+
+        if (_runUpdate == true)
         {
-            if (GamePieces.CountGameBlocksOutsideGrid() != outsidePieces)
+            _gatherScoreTime += Time.deltaTime;
+            if (_gatherScoreTime > _waitTime)
             {
-                previous1 = outsidePieces;
-                outsidePieces = GamePieces.CountGameBlocksOutsideGrid();
+                _gatherScoreTime = 0f;
+                _runUpdate = false;
             }
 
-            if (GamePieces.HasAnGamePieceBeenPlayedToUpdateScore == true)
+            if (DetectPossibleMoves.IsGameOver == true)
             {
-                isThereValidMoves = DetectPossibleMoves.IsThereAValidMove();
+                // Condenced game update score below for game over text w/o animation
+                totalScoreText.text = PlayedScore.ToString();
+                int diff = TotalScore - PlayedScore;
+                int loops = 10;
+                int valueToIncrement = diff / loops;
+                int temp = PlayedScore + valueToIncrement;
+                totalScoreText.text = temp.ToString();
+                GameOverInfo.totalScore = temp;
 
-                GamePieces.HasAnGamePieceBeenPlayedToUpdateScore = false;
-
-                previous3 = previous2;
-                previous2 = outsidePieces;
-                if (previous3 != 0)
+                TotalScore = temp;
+            }
+            else
+            {
+                if (GamePieces.CountGameBlocksOutsideGrid() != outsidePieces)
                 {
-                    blockPlayed = Math.Abs(previous2 - previous3);
-                    //Debug.Log(blockPlayed);
-
-                    // Adjust score
-                    int max = Math.Max(PlayedScore, TotalScore);
-                    PlayedScore = max;
-                    TotalScore = max;
-
-                    // Update scores on played & total
-                    PlayedScore += blockPlayed;
-                    TotalScore += blockPlayed;
-
-                    // If rows were cleared, add them to total score & played score when complete
-                    int clear = GameGrid.howManyRowsColsWereFilled;
-                    if (clear > 0)
-                        GetRowsClears(GameGrid.howManyRowsColsWereFilled);
-                    GameGrid.howManyRowsColsWereFilled = 0;
-
-                    //PrintScore();
-                    UpdateScore();
+                    previous1 = outsidePieces;
+                    outsidePieces = GamePieces.CountGameBlocksOutsideGrid();
                 }
 
-                //Debug.Log(previous1 + " , " + previous2 + " , " + previous3);
-
-
-                //int blocksPlayed = 
-
-            }
-
-            if (!isThereValidMoves && !saved)
-            {
-                if (TotalScore > HighScore)
+                if (GamePieces.HasAnGamePieceBeenPlayedToUpdateScore == true)
                 {
-                    SaveData.SetHighScore(TotalScore, HighScore);
-                    SavedData data = new SavedData();
-                    data.Save(SaveData);
+                    isThereValidMoves = DetectPossibleMoves.IsThereAValidMove();
+
+                    GamePieces.HasAnGamePieceBeenPlayedToUpdateScore = false;
+
+                    previous3 = previous2;
+                    previous2 = outsidePieces;
+                    if (previous3 != 0)
+                    {
+                        blockPlayed = Math.Abs(previous2 - previous3);
+                        //Debug.Log(blockPlayed);
+
+                        // Adjust score
+                        int max = Math.Max(PlayedScore, TotalScore);
+                        PlayedScore = max;
+                        TotalScore = max;
+
+                        // Update scores on played & total
+                        PlayedScore += blockPlayed;
+                        TotalScore += blockPlayed;
+
+                        // If rows were cleared, add them to total score & played score when complete
+                        int clear = GameGrid.howManyRowsColsWereFilled;
+                        if (clear > 0)
+                            GetRowsClears(GameGrid.howManyRowsColsWereFilled);
+                        GameGrid.howManyRowsColsWereFilled = 0;
+
+                        //PrintScore();
+                        UpdateScore();
+                    }
+
+                    //Debug.Log(previous1 + " , " + previous2 + " , " + previous3);
+
+
+                    //int blocksPlayed = 
+
                 }
 
-                //Debug.Log("Game Over");
-                DetectPossibleMoves.IsGameOver = true;
+                if (!isThereValidMoves && !saved)
+                {
+                    if (TotalScore > HighScore)
+                    {
+                        SaveData.SetHighScore(TotalScore, HighScore);
+                        SavedData data = new SavedData();
+                        data.Save(SaveData);
+                    }
 
-                saved = true;
+                    //Debug.Log("Game Over");
+                    DetectPossibleMoves.IsGameOver = true;
+
+                    saved = true;
+                }
             }
         }
+
     }
 
     private void UpdateScore()

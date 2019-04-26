@@ -21,6 +21,7 @@ public class CreateGrid : MonoBehaviour
                 GameObject cube = Instantiate(GreyBlock) as GameObject;
                 //cube.AddComponent<Rigidbody>();
                 cube.transform.position = new Vector3(x, y, 1);
+                //cube.GetComponentInChildren<Animator>().enabled = false;
             }
         }
     }

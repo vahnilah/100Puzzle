@@ -126,7 +126,7 @@ MonoBehaviour:
   CreateUV: 1
   FlipBackFaceUV: 0
   DoubleSided: 0
-  AutoUpdate: 1
+  AutoUpdate: 0
 --- !u!95 &859358773
 Animator:
   serializedVersion: 3

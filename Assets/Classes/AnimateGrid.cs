@@ -81,15 +81,15 @@ public class AnimateGrid : MonoBehaviour
             {
                 if (SetColor.GetDarkMode() == true)
                 {
-                    GameGrid.grid[x, y].gameObject.GetComponentInChildren<Animator>().enabled = true;
                     GameGrid.grid[x, y].gameObject.GetComponentInChildren<Animator>().Play("BlockClearDark", 0, delay); // _name, _layer, _delay
                     delay += .1f;
+                    //GameGrid.grid[x, y].gameObject.GetComponentInChildren<Animator>().enabled = false;
                 }
                 else
                 {
-                    GameGrid.grid[x, y].gameObject.GetComponentInChildren<Animator>().enabled = true;
                     GameGrid.grid[x, y].gameObject.GetComponentInChildren<Animator>().Play("BlockClearLight", 0, delay); // _name, _layer, _delay
                     delay += .1f;
+                    //GameGrid.grid[x, y].gameObject.GetComponentInChildren<Animator>().enabled = false;
                 }
             }
         }
@@ -149,16 +149,20 @@ public class AnimateGrid : MonoBehaviour
             float loc = -PlayAtLocation(a % 10);
             if (SetColor.GetDarkMode() == true)
             {
+                bg_grid[a].GetComponent<Animator>().enabled = true;
                 bg_grid[a].GetComponent<Animator>().Play("BlockClearDark", 0, loc);
             }
             else
             {
+                bg_grid[a].GetComponent<Animator>().enabled = true;
                 bg_grid[a].GetComponent<Animator>().Play("BlockClearLight", 0, loc);
 
             }
             // Delete the changed block on the MeshRender.materal[1] on the bg
             MeshRenderer bgBlock = bg_grid[a].GetComponent<MeshRenderer>();
             mono.StartCoroutine(DeleteColorChange(bgBlock, wait));
+            mono.StartCoroutine(DisableAnimator(bg_grid[a].GetComponent<Animator>(), wait + 1f).GetEnumerator());
+
             wait += changeTranstionalTime;
 
             // Reset the time every row change for multiple clears in one play
@@ -177,15 +181,19 @@ public class AnimateGrid : MonoBehaviour
             //if (a % 10 == rowLoc) loc += PlayAtLocation(a / 10);
             if (SetColor.GetDarkMode() == true)
             {
+                bg_grid[a].GetComponent<Animator>().enabled = true;
                 bg_grid[a].GetComponent<Animator>().Play("BlockClearDark", 0, loc);
             } else
             {
+                bg_grid[a].GetComponent<Animator>().enabled = true;
                 bg_grid[a].GetComponent<Animator>().Play("BlockClearLight", 0, loc);
 
             }
             // Delete the changed block on the MeshRender.materal[1] on the bg 
             MeshRenderer bgBlock = bg_grid[a].GetComponent<MeshRenderer>();
             mono.StartCoroutine(DeleteColorChange(bgBlock, wait));
+            mono.StartCoroutine(DisableAnimator(bg_grid[a].GetComponent<Animator>(), wait + 1f).GetEnumerator());
+
             wait += changeTranstionalTime;
 
             // Reset the time every col change for multiple clears in one play
@@ -205,6 +213,15 @@ public class AnimateGrid : MonoBehaviour
         meshMats[2] = null;
 
         bgBlock.materials = meshMats;
+
+    }
+
+    static IEnumerable DisableAnimator(Animator ani, float value)
+    {
+        // Wait time
+        yield return new WaitForSeconds(changeDeleteTime + value);
+
+        ani.enabled = false;
     }
 
     // Reliable method to get the delay of the animation based on location.

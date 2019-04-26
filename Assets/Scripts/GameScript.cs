@@ -50,8 +50,14 @@ public class GameScript : MonoBehaviour
         highScoreIcon.SetActive(true);
 
 
+        // Change BG
+        var camera = (Camera)FindObjectOfType(typeof(Camera));
+        camera.backgroundColor = SetColor.GetColor("Background");
 
-        //GameOver();
+        // Change Grid
+        AnimateGrid.SetGrid();
+
+        UpdateColor();
     }
 
     private void Instance_ScreenSizeChangeEvent(int Width, int Height)
@@ -94,75 +100,31 @@ public class GameScript : MonoBehaviour
 
     }
 
+    private bool _canUpdateColor = false;
+    private bool _canUpdateGrid = false;
+    private float _gatherColorTime = 0f;
+    private float _waitTime = 1f;
+    private bool _updateOnce = true;
+
     // Update is called once per frame
     void Update()
     {
-        // Set the color of the grid
-        if (AnimateGrid.setGrid == false)
+        if (Input.GetMouseButtonUp(0) || Input.GetMouseButton(0))
         {
-            AnimateGrid.SetGrid();
-            AnimateGrid.setGrid = true;
+            _canUpdateColor = true;
+            _canUpdateGrid = true;
+            _gatherColorTime = 0f;
         }
 
-        // Change colors to Light / Dark mode
-        if (SetColor.WillChangeColor == true)
+        // Set the color of the grid
+        if (AnimateGrid.setGrid == false && _updateOnce == true)
         {
-            // Change BG
-            var camera = (Camera) FindObjectOfType(typeof(Camera));
-            camera.backgroundColor = SetColor.GetColor("Background");
+            //_gatherGridTime += Time.deltaTime;
+            //if (_gatherGridTime > _waitTime)
+                //_canUpdateGrid = false;
 
-            // Change Grid
             AnimateGrid.SetGrid();
-
-            // Change Icon Color on highscore
-            SpriteRenderer HighScoreIconRender = highScoreIcon.GetComponent<SpriteRenderer>();
-            if (SetColor.GetDarkMode() == true)
-            {
-                HighScoreIconRender.color = SetColor.GetColor("Font");
-            }
-            else
-            {
-                HighScoreIconRender.color = SetColor.GetColor("Font");
-            }
-
-            // Change ChangeIconImage Image
-            Image changeColorButtonImage = changeColorButton.GetComponent<Image>();
-            //Debug.Log(changeColorButtonImage);
-
-            if (SetColor.GetDarkMode() == true)
-            {
-                changeColorButtonImage.sprite = Resources.Load<Sprite>("Images/GridIconAlt");
-
-            }
-            else
-            {
-
-                changeColorButtonImage.sprite = Resources.Load<Sprite>("Images/GridIconDark");
-
-
-            }
-
-            // Change Labels
-            GameObject[] labels = GameObject.FindGameObjectsWithTag("TextLabel");
-            foreach (var a in labels)
-            {
-                MeshRenderer bgBlock = a.GetComponent<MeshRenderer>();
-                Material[] meshMats = bgBlock.materials;
-
-                if (SetColor.GetDarkMode() == true)
-                {
-                    meshMats[0] = null;
-                    meshMats[0] = SetColor.GetMaterial("Grid");
-                }
-                else
-                {
-                    meshMats[0] = null;
-                    meshMats[0] = SetColor.GetMaterial("Grid");
-
-                }
-
-                bgBlock.materials = meshMats;
-            }
+            AnimateGrid.setGrid = true;
 
             // Changel Text on Labels
             GameObject[] textLabels = GameObject.FindGameObjectsWithTag("ScoreText");
@@ -197,6 +159,18 @@ public class GameScript : MonoBehaviour
                 }
             }
 
+            _updateOnce = false;
+        }
+
+        // Change colors to Light / Dark mode
+        if (SetColor.WillChangeColor == true && _canUpdateColor == true)
+        {
+            _gatherColorTime += Time.deltaTime;
+            if (_gatherColorTime > _waitTime)
+                _canUpdateColor = false;
+
+            UpdateColor();
+
 
             SetColor.WillChangeColor = false;
         }
@@ -210,6 +184,7 @@ public class GameScript : MonoBehaviour
             GameOverInfo.RestartGame = false;
             AnimateGrid.setGrid = false;
             SetColor.WillChangeColor = true;
+            _updateOnce = true;
 
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
@@ -273,6 +248,100 @@ public class GameScript : MonoBehaviour
 
         }
     }
+
+    void UpdateColor()
+    {
+        // Change BG
+        var camera = (Camera)FindObjectOfType(typeof(Camera));
+        camera.backgroundColor = SetColor.GetColor("Background");
+
+        // Change Grid
+        AnimateGrid.SetGrid();
+
+        // Change Icon Color on highscore
+        SpriteRenderer HighScoreIconRender = highScoreIcon.GetComponent<SpriteRenderer>();
+        if (SetColor.GetDarkMode() == true)
+        {
+            HighScoreIconRender.color = SetColor.GetColor("Font");
+        }
+        else
+        {
+            HighScoreIconRender.color = SetColor.GetColor("Font");
+        }
+
+        // Change ChangeIconImage Image
+        Image changeColorButtonImage = changeColorButton.GetComponent<Image>();
+        //Debug.Log(changeColorButtonImage);
+
+        if (SetColor.GetDarkMode() == true)
+        {
+            changeColorButtonImage.sprite = Resources.Load<Sprite>("Images/GridIconAlt");
+
+        }
+        else
+        {
+
+            changeColorButtonImage.sprite = Resources.Load<Sprite>("Images/GridIconDark");
+
+
+        }
+
+        // Change Labels
+        GameObject[] labels = GameObject.FindGameObjectsWithTag("TextLabel");
+        foreach (var a in labels)
+        {
+            MeshRenderer bgBlock = a.GetComponent<MeshRenderer>();
+            Material[] meshMats = bgBlock.materials;
+
+            if (SetColor.GetDarkMode() == true)
+            {
+                meshMats[0] = null;
+                meshMats[0] = SetColor.GetMaterial("Grid");
+            }
+            else
+            {
+                meshMats[0] = null;
+                meshMats[0] = SetColor.GetMaterial("Grid");
+
+            }
+
+            bgBlock.materials = meshMats;
+        }
+
+        // Changel Text on Labels
+        GameObject[] textLabels = GameObject.FindGameObjectsWithTag("ScoreText");
+        // Set UI Text to objects to access
+        //Debug.Log(objs.Length);
+        foreach (var i in textLabels)
+        {
+            var t = i.GetComponent<Text>();
+            if (t.name.Equals("HighScore"))
+            {
+                if (SetColor.GetDarkMode() == true)
+                {
+                    t.color = SetColor.GetColor("Font");
+                }
+                else
+                {
+                    t.color = SetColor.GetColor("Font");
+                }
+
+            }
+            if (t.name.Equals("CurrentScore"))
+            {
+                if (SetColor.GetDarkMode() == true)
+                {
+                    t.color = SetColor.GetColor("Font");
+                }
+                else
+                {
+                    t.color = SetColor.GetColor("Font");
+                }
+
+            }
+        }
+    }
+
 
     void Debugging()
     {

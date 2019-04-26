@@ -28,6 +28,13 @@ public class GameGrid : MonoBehaviour
     public static int numberOfBlocks { get; private set; }
     public static int numberOfRows { get; private set; }
 
+    //public void Start()
+    //{
+    //    for (int x = 0; x < width; x++)
+    //        for (int y = 0; y < height; y++)
+    //        grid[x, y].gameObject.GetComponentInChildren<Animator>().enabled = false;
+    //}
+
 
     // Obtain nearest whole number on grid
     public static Vector2 Vector2Round(Vector2 vec)
@@ -54,7 +61,7 @@ public class GameGrid : MonoBehaviour
             return true;
         }
 
-        catch (System.IndexOutOfRangeException e)
+        catch (System.IndexOutOfRangeException)
         {
             return false;
         }
